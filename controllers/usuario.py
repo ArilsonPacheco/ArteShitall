@@ -5,7 +5,7 @@ import models.Usuario as Usr
 import controllers.login as login
 import pandas as pd
 
-whr = ' where "Usuario"."IDUsuario" = %s'
+whr = ' where "IDUsuario" = %s'
 
 def RecDF(rd):
     return pd.DataFrame.from_records(rd, columns=["id", "usuario", "passw", "Nivel", "created_at"])

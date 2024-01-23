@@ -7,7 +7,7 @@ import models.Usuario as Usuario
 if 'Nivel' not in st.session_state:
     st.session_state['Nivel'] = 0
 
-if  st.session_state['Nivel'] == 0:    
+if  st.session_state.Nivel == 0:    
     login_form = st.form(key="login", border=True)
     login_form.image(st.secrets.Logo2)
     lsuser = login_form.text_input(label="Usuário")
@@ -18,17 +18,20 @@ if  st.session_state['Nivel'] == 0:
     if  bEntrar:
         Nivel = controlLogin.Logar(Usuario.Usuario(0,0, lsuser, lspass, 0))
         if  Nivel:
-            st.session_state['Nivel'] = Nivel
+            st.session_state.Nivel = Nivel
             st.rerun()
         else:
             st.error("Login incorreto!")
 
-if  st.session_state['Nivel'] > 0:
+if  st.session_state.Nivel > 0:
+    st.subheader(f"Você está logado com nível : {st.session_state.Nivel}", divider="rainbow")
     bLogin = st.button(label="Novo Login", type="primary")
     if  bLogin:
-        st.session_state['Nivel'] = 0
+        st.session_state.Nivel = 0
+        st.rerun()
+
     with st.sidebar:
           col1, col2 = st.columns([0.4, 0.6])
           col2.image(st.secrets.Logo1, width=50)
-          Nivel = st.session_state['Nivel']
+          Nivel = st.session_state.Nivel
           
