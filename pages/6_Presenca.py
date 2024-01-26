@@ -1,15 +1,14 @@
 
 import streamlit as st
-from st_aggrid import AgGrid
-import st_aggrid as agg
-import df_grid as grid
 import controllers.Presenca as controlPresenca
 import controllers.Grupo as controlGrupo
 import controllers.Aluno as controlAluno
 import models.Presenca as Presenca
 
+st.set_page_config(page_title="ArteShitall - Presença", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
+
 st.subheader("Lista de presença", divider="rainbow")
-if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel > 1):
+if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_z):
     st.switch_page("Home.py")
     
 if  'sel_Presenca' not in st.session_state:
@@ -52,69 +51,27 @@ def btnNovoFiltroClick():
 if  st.session_state.sel_Presenca == 0:
     st.button(label="Novo Filtro", type="primary", on_click=btnNovoFiltroClick)
             
-    checkbox_renderer = agg.JsCode(
-            """
-            class CheckboxRenderer{
-            init(params) {
-                this.params = params;
-                this.eGui = document.createElement('input');
-                this.eGui.type = 'checkbox';
-                this.eGui.checked = params.value;
-                this.checkedHandler = this.checkedHandler.bind(this);
-                this.eGui.addEventListener('click', this.checkedHandler);
-            }
-            checkedHandler(e) {
-                let checked = e.target.checked;
-                let colId = this.params.column.colId;
-                this.params.node.setDataValue(colId, checked);
-            }
-            getGui(params) {
-                return this.eGui;
-            }
-            destroy(params) {
-            this.eGui.removeEventListener('click', this.checkedHandler);
-            }
-            }//end class
-        """
-        )
-    rowStyle_renderer = agg.JsCode(
-        """
-        function(params) {
-            if (params.data.Selected) {
-                return {
-                    'color': 'black',
-                    'backgroundColor': 'pink'
-                }
-            }
-            else {
-                return {
-                    'color': 'black',
-                    'backgroundColor': 'white'
-                }
-            }
-        }; 
-        """   
-    ) 
-
     df = controlPresenca.ListaPresenca(None, st.session_state.sel_fltData, st.session_state.sel_fltGrp)
-    builder = agg.GridOptionsBuilder.from_dataframe(df)
-    builder.configure_pagination(enabled=True)
-    builder.configure_selection(selection_mode='single', use_checkbox=False)
-    builder.configure_column('id', editable=False)
-    builder.configure_column("Data", type=["customDateTimeFormat"], custom_format_string='dd/MM/yyyy')
-    builder.configure_column("Presente", cellRenderer=checkbox_renderer)
-    builder.configure_column("Justificado", cellRenderer=checkbox_renderer)
     
-    grid_options = builder.build()
-
-    return_value = AgGrid(df, gridOptions=grid_options, columns_auto_size_mode=agg.ColumnsAutoSizeMode.FIT_CONTENTS, allow_unsafe_jscode=True)
+    df_with_selections = df.copy()
+    df_with_selections.insert(0, "Select", False)
+    edited_df = st.data_editor(
+        df_with_selections,
+        hide_index=True,
+        column_config={"Select": st.column_config.CheckboxColumn(required=True),
+                       "Data": st.column_config.DateColumn(format="DD/MM/YYYY")
+                       },
+        disabled=df.columns,
+    )
+    #selected_indices = list(np.where(edited_df.Select)[0])
+    selected_rows = df[edited_df.Select]
+    
+    for fld in selected_rows.itertuples():
+        st.session_state.sel_Presenca = fld.id
+        st.rerun()
     
     st.button(label="Nova Preseça", type="primary", on_click=btnNovoClick)
     
-    if return_value['selected_rows']:
-        st.session_state.sel_Presenca = return_value['selected_rows'][0]['id']
-        st.rerun()
-        
 if  st.session_state.sel_Presenca > 0:
     bVoltar = st.button(label="Voltar", type="primary")
     if  bVoltar:

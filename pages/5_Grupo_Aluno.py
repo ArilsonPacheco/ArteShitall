@@ -1,15 +1,15 @@
 
 import streamlit as st
-from st_aggrid import AgGrid
-import st_aggrid as agg
 import df_grid as grid
 import controllers.Grupo_Aluno as controlGrupo_Aluno
 import controllers.Grupo as controlGrupo
 import controllers.Aluno as controlAluno
 import models.Grupo_Aluno as Grupo_Aluno
 
+st.set_page_config(page_title="ArteShitall - Grupo Aluno", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
+
 st.subheader("Cadastrado de grupo aluno", divider="rainbow")
-if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel > 1):
+if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_y):
     st.switch_page("Home.py")
     
 if  'sel_Grupo_Aluno' not in st.session_state:
@@ -20,19 +20,22 @@ def btnNovoClick():
     
 if  st.session_state.sel_Grupo_Aluno == 0:
     df = grid.filter_dataframe(controlGrupo_Aluno.ListaGrupo_Aluno(None))
-    builder = agg.GridOptionsBuilder.from_dataframe(df)
-    #builder.configure_pagination(enabled=True)
-    builder.configure_selection(selection_mode='single', use_checkbox=False)
-    builder.configure_column('id', editable=False)
-    grid_options = builder.build()
-
-    return_value = AgGrid(df, gridOptions=grid_options, columns_auto_size_mode=agg.ColumnsAutoSizeMode.FIT_CONTENTS)
+    df_with_selections = df.copy()
+    df_with_selections.insert(0, "Select", False)
+    edited_df = st.data_editor(
+        df_with_selections,
+        hide_index=True,
+        column_config={"Select": st.column_config.CheckboxColumn(required=True)
+                       },
+        disabled=df.columns,
+    )
+    selected_rows = df[edited_df.Select]
     
-    st.button(label="Novo Grupo Aluno", type="primary", on_click=btnNovoClick)
-    
-    if return_value['selected_rows']:
-        st.session_state.sel_Grupo_Aluno = return_value['selected_rows'][0]['id']
+    for fld in selected_rows.itertuples():
+        st.session_state.sel_Grupo_Aluno = fld.id
         st.rerun()
+        
+    st.button(label="Novo Grupo Aluno", type="primary", on_click=btnNovoClick)
         
 if  st.session_state.sel_Grupo_Aluno > 0:
     bVoltar = st.button(label="Voltar", type="primary")

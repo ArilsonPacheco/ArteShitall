@@ -1,15 +1,14 @@
 
 import streamlit as st
-from st_aggrid import AgGrid
-import st_aggrid as agg
 import df_grid as grid
 import controllers.Aluno as controlAluno
 import controllers.categoria as controlCategoria
 import models.Aluno as Aluno
-import datetime as dt
+
+st.set_page_config(page_title="ArteShitall - Aluno", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
 st.subheader("Cadastrado de aluno", divider="rainbow")
-if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel > 1):
+if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_y):
     st.switch_page("Home.py")
     
 if  'sel_Aluno' not in st.session_state:
@@ -19,67 +18,25 @@ def btnNovoClick():
     st.session_state.sel_Aluno = -1
     
 if  st.session_state.sel_Aluno == 0:
-    checkbox_renderer = agg.JsCode(
-            """
-            class CheckboxRenderer{
-            init(params) {
-                this.params = params;
-                this.eGui = document.createElement('input');
-                this.eGui.type = 'checkbox';
-                this.eGui.checked = params.value;
-                this.checkedHandler = this.checkedHandler.bind(this);
-                this.eGui.addEventListener('click', this.checkedHandler);
-            }
-            checkedHandler(e) {
-                let checked = e.target.checked;
-                let colId = this.params.column.colId;
-                this.params.node.setDataValue(colId, checked);
-            }
-            getGui(params) {
-                return this.eGui;
-            }
-            destroy(params) {
-            this.eGui.removeEventListener('click', this.checkedHandler);
-            }
-            }//end class
-        """
-        )
-    rowStyle_renderer = agg.JsCode(
-        """
-        function(params) {
-            if (params.data.Selected) {
-                return {
-                    'color': 'black',
-                    'backgroundColor': 'pink'
-                }
-            }
-            else {
-                return {
-                    'color': 'black',
-                    'backgroundColor': 'white'
-                }
-            }
-        }; 
-        """   
-    ) 
-
     df = grid.filter_dataframe(controlAluno.ListaAluno(None))
-    builder = agg.GridOptionsBuilder.from_dataframe(df)
-    builder.configure_pagination(enabled=True)
-    builder.configure_selection(selection_mode='single', use_checkbox=False)
-    builder.configure_column('id', editable=False)
-    builder.configure_column("Data Nasc.", type=["customDateTimeFormat"], custom_format_string='dd/MM/yyyy')
-    builder.configure_column("Data Cadastro", type=["customDateTimeFormat"], custom_format_string='dd/MM/yyyy')
-    builder.configure_column("Ativo", cellRenderer=checkbox_renderer)
-    grid_options = builder.build()
-
-    return_value = AgGrid(df, gridOptions=grid_options, columns_auto_size_mode=agg.ColumnsAutoSizeMode.FIT_CONTENTS, allow_unsafe_jscode=True)
+    df_with_selections = df.copy()
+    df_with_selections.insert(0, "Select", False)
+    edited_df = st.data_editor(
+        df_with_selections,
+        hide_index=True,
+        column_config={"Select": st.column_config.CheckboxColumn(required=True),
+                       "Data Nasc.": st.column_config.DateColumn(format="DD/MM/YYYY"),
+                       "Data Cadastro": st.column_config.DateColumn(format="DD/MM/YYYY")
+                       },
+        disabled=df.columns,
+    )
+    selected_rows = df[edited_df.Select]
+    
+    for fld in selected_rows.itertuples():
+        st.session_state.sel_Aluno = fld.id
+        st.rerun()
     
     st.button(label="Novo Aluno", type="primary", on_click=btnNovoClick)
-    
-    if return_value['selected_rows']:
-        st.session_state.sel_Aluno = return_value['selected_rows'][0]['id']
-        st.rerun()
         
 if  st.session_state.sel_Aluno > 0:
     bVoltar = st.button(label="Voltar", type="primary")

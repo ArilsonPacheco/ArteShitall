@@ -4,9 +4,15 @@ import services.database as db
 import controllers.login as controlLogin
 import models.Usuario as Usuario
 
+st.set_page_config(page_title="ArteShitall", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
+
 if 'Nivel' not in st.session_state:
     st.session_state['Nivel'] = 0
 
+with st.sidebar:
+    col1, col2 = st.columns([0.4, 0.6])
+    col2.image(st.secrets.Logo1, width=50)
+          
 if  st.session_state.Nivel == 0:    
     login_form = st.form(key="login", border=True)
     login_form.image(st.secrets.Logo2)
@@ -30,8 +36,4 @@ if  st.session_state.Nivel > 0:
         st.session_state.Nivel = 0
         st.rerun()
 
-    with st.sidebar:
-          col1, col2 = st.columns([0.4, 0.6])
-          col2.image(st.secrets.Logo1, width=50)
-          Nivel = st.session_state.Nivel
           
