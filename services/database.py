@@ -6,7 +6,7 @@ import psycopg2
 
 dbconn = psycopg2.connect(
     host = st.secrets.host,
-    user = "postgres",
+    user = st.secrets.user,
     password = st.secrets.password,
     database = "postgres")
 

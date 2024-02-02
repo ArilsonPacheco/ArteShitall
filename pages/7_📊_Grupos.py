@@ -4,7 +4,7 @@ import controllers.Grupos as controlGrupos
 import df_grid as grid
 import altair as alt
 
-st.set_page_config(page_title="ArteShitall - Presença", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
+st.set_page_config(page_title="ArteShitall - Grupos", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
 if 'Grupos' not in st.session_state:
     st.session_state['Grupos'] = 0
