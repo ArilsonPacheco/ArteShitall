@@ -6,7 +6,7 @@ import models.Usuario as Usr
 
 st.set_page_config(page_title="ArteShitall - Usuário", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
-st.subheader(":lock: Cadastrado de usuário", divider="rainbow")
+st.subheader(":lock: Cadastro de usuário", divider="rainbow")
 if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_x):
     st.switch_page("1_🏠_Home.py")
     

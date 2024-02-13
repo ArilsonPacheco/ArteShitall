@@ -6,7 +6,7 @@ import models.Categoria as Ctg
 
 st.set_page_config(page_title="ArteShitall - Categoria", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
-st.subheader(":blue_book: Cadastrado de categoria", divider="rainbow")
+st.subheader(":blue_book: Cadastro de categoria", divider="rainbow")
 if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_y):
     st.switch_page("1_🏠_Home.py")
     

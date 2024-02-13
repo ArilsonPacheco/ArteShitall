@@ -7,7 +7,7 @@ import models.Aluno as Aluno
 
 st.set_page_config(page_title="ArteShitall - Aluno", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
-st.subheader(":scientist: Cadastrado de aluno", divider="rainbow")
+st.subheader(":scientist: Cadastro de aluno", divider="rainbow")
 if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_y):
     st.switch_page("1_🏠_Home.py")
     

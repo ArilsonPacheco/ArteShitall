@@ -6,7 +6,7 @@ import models.Grupo as Grupo
 
 st.set_page_config(page_title="ArteShitall - Grupo", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
-st.subheader(":bust_in_silhouette: Cadastrado de grupo", divider="rainbow")
+st.subheader(":bust_in_silhouette: Cadastro de grupo", divider="rainbow")
 if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_y):
     st.switch_page("1_🏠_Home.py")
     
