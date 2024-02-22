@@ -42,3 +42,20 @@ def GerarListaPresenca(data, idgrupo):
     gerPresenca = 'select "GerarPresenca"(%s, %s)'
     params = (data, idgrupo,)
     db.curssor.execute(gerPresenca, params)
+    
+def ConsultaPresenca(DataI, DataF):
+    qry = """
+          select "DS_Grupo" as grupo, "NM_Aluno" as aluno, tot_encontro as encontros, tot_faltas as faltas, tot_just as justificadas, round((1-(tot_faltas/tot_encontro))*100,2) as porcentagem from (
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", sum(tot_encontro) as tot_encontro, sum(tot_Faltas) as tot_Faltas, sum(tot_Just) as tot_Just from (
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", count(*) as tot_encontro, 0 as tot_Faltas, 0 as tot_Just from "Presenca" where "Data" between %s and %s group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          union all
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", 0 as tot_encontro, count(*) as tot_Faltas, 0 as tot_Just from "Presenca" where "Data" between %s and %s and "Presente" = false group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          union all
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", 0 as tot_encontro, 0 as tot_Faltas, count(*) as tot_Just from "Presenca" where "Data" between %s and %s and "Presente" = false and "Justificado" = true group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          ) tot1
+          group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          ) tot2, "Grupo", "Aluno" where "IDGrupo" = "fk_Grupo_rpGrupo" and "IDAluno" = "fk_Aluno_rpAluno" 
+      """
+    params = (DataI, DataF,DataI, DataF,DataI, DataF,)
+    db.curssor.execute(qry, params)
+    return pd.DataFrame.from_records(db.curssor.fetchall(), columns=["Grupo", "Aluno", "Encontros", "Faltas", "Justificadas", "% Presença"])
