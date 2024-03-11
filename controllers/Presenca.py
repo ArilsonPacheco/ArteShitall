@@ -7,16 +7,16 @@ whr = ' and "IDPresenca" = %s'
 whr1= ' where "IDPresenca" = %s'
 
 def RecDF(rd):
-    return pd.DataFrame.from_records(rd, columns=["id", "Presente", "Justificado", "Data", "id Aluno", "Aluno", "id Grupo", "Grupo", "created_at"])
+    return pd.DataFrame.from_records(rd, columns=["Presente", "Justificado", "Data", "Aluno", "Grupo", "id", "id Aluno", "id Grupo", "created_at"])
 
 def ListaPresenca(id, data, idgrupo):
-    qryPresenca = 'select "IDPresenca", "Presente", "Justificado", "Data"::Date, "fk_Aluno_rpAluno", "NM_Aluno", "fk_Grupo_rpGrupo", "DS_Grupo", p.created_at from "Presenca" p, "Grupo", "Aluno" where "IDGrupo" = "fk_Grupo_rpGrupo" and "IDAluno" = "fk_Aluno_rpAluno"'
+    qryPresenca = 'select "Presente", "Justificado", "Data"::Date, "NM_Aluno", "DS_Grupo", "IDPresenca", "fk_Aluno_rpAluno", "fk_Grupo_rpGrupo", p.created_at from "Presenca" p, "Grupo", "Aluno" where "IDGrupo" = "fk_Grupo_rpGrupo" and "IDAluno" = "fk_Aluno_rpAluno"'
     if  id:
         retusr = []
         db.curssor.execute(qryPresenca + whr, (id,))
         df = RecDF(db.curssor.fetchall())
         for row in df.itertuples():
-            retusr.append(Presenca.Presenca(row.id, row.created_at, row.Presente, row.Justificado, row.Data, row[7], row[5], row.Grupo, row.Aluno))
+            retusr.append(Presenca.Presenca(row.id, row.created_at, row.Presente, row.Justificado, row.Data, row[8], row[7], row.Grupo, row.Aluno))
         return retusr[0]
     else:
         whr3 = ' and "Data" = %s and "fk_Grupo_rpGrupo" = %s'
@@ -43,19 +43,19 @@ def GerarListaPresenca(data, idgrupo):
     params = (data, idgrupo,)
     db.curssor.execute(gerPresenca, params)
     
-def ConsultaPresenca(DataI, DataF):
+def ConsultaPresenca(DataI, DataF, IDGrupo):
     qry = """
           select "DS_Grupo" as grupo, "NM_Aluno" as aluno, tot_encontro as encontros, tot_faltas as faltas, tot_just as justificadas, round((1-(tot_faltas/tot_encontro))*100,2) as porcentagem from (
           select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", sum(tot_encontro) as tot_encontro, sum(tot_Faltas) as tot_Faltas, sum(tot_Just) as tot_Just from (
-          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", count(*) as tot_encontro, 0 as tot_Faltas, 0 as tot_Just from "Presenca" where "Data" between %s and %s group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", count(*) as tot_encontro, 0 as tot_Faltas, 0 as tot_Just from "Presenca" where "fk_Grupo_rpGrupo" = %s and "Data" between %s and %s group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
           union all
-          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", 0 as tot_encontro, count(*) as tot_Faltas, 0 as tot_Just from "Presenca" where "Data" between %s and %s and "Presente" = false group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", 0 as tot_encontro, count(*) as tot_Faltas, 0 as tot_Just from "Presenca" where "fk_Grupo_rpGrupo" = %s and "Data" between %s and %s and "Presente" = false group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
           union all
-          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", 0 as tot_encontro, 0 as tot_Faltas, count(*) as tot_Just from "Presenca" where "Data" between %s and %s and "Presente" = false and "Justificado" = true group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
+          select "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno", 0 as tot_encontro, 0 as tot_Faltas, count(*) as tot_Just from "Presenca" where "fk_Grupo_rpGrupo" = %s and "Data" between %s and %s and "Presente" = false and "Justificado" = true group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
           ) tot1
           group by "fk_Grupo_rpGrupo", "fk_Aluno_rpAluno"
           ) tot2, "Grupo", "Aluno" where "IDGrupo" = "fk_Grupo_rpGrupo" and "IDAluno" = "fk_Aluno_rpAluno" 
       """
-    params = (DataI, DataF,DataI, DataF,DataI, DataF,)
+    params = (IDGrupo, DataI, DataF, IDGrupo, DataI, DataF, IDGrupo, DataI, DataF,)
     db.curssor.execute(qry, params)
     return pd.DataFrame.from_records(db.curssor.fetchall(), columns=["Grupo", "Aluno", "Encontros", "Faltas", "Justificadas", "% Presença"])
