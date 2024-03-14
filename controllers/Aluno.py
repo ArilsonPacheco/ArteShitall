@@ -3,6 +3,7 @@ import services.database as db
 import models.Aluno as Aluno
 import pandas as pd
 
+qryAluno = 'select "IDAluno", "NM_Aluno", "DS_Categoria", "DT_Nasc"::Date, "DT_Cadastro"::Date, "Ativo", "fk_Categoria_rCategoria", a."created_at" from "Aluno" a, "Categoria" c where c."IDCategoria" = a."fk_Categoria_rCategoria"'
 whr = ' where "IDAluno" = %s'
 whr1= ' and "IDAluno" = %s'
 
@@ -10,7 +11,6 @@ def RecDF(rd):
     return pd.DataFrame.from_records(rd, columns=["id", "Aluno", "Categoria", "Data Nasc.", "Data Cadastro", "Ativo", "id categoria", "created_at"])
 
 def ListaAluno(id):
-    qryAluno = 'select "IDAluno", "NM_Aluno", "DS_Categoria", "DT_Nasc"::Date, "DT_Cadastro"::Date, "Ativo", "fk_Categoria_rCategoria", a."created_at" from "Aluno" a, "Categoria" c where c."IDCategoria" = a."fk_Categoria_rCategoria"'
     if  id:
         retusr = []
         db.curssor.execute(qryAluno + whr1, (id,))
@@ -22,9 +22,13 @@ def ListaAluno(id):
         db.curssor.execute(qryAluno)
         return RecDF(db.curssor.fetchall())
 
+def ListaAniverssario(mes):
+    db.curssor.execute(qryAluno + ' and extract(month from "DT_Nasc") = %s', (mes,))
+    return RecDF(db.curssor.fetchall())
+    
 def ListaAlunoF7():
-    qryAluno = 'select "IDAluno", "NM_Aluno" from "Aluno"'
-    db.curssor.execute(qryAluno)
+    qryAlunoF7 = 'select "IDAluno", "NM_Aluno" from "Aluno"'
+    db.curssor.execute(qryAlunoF7)
     return pd.DataFrame.from_records(db.curssor.fetchall(), columns=["id", "Aluno"])
     
 def InsereAluno(Aluno):
