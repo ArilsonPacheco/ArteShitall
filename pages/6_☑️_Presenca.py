@@ -20,6 +20,9 @@ if  'sel_fltData' not in st.session_state:
 if  'sel_fltGrp' not in st.session_state:
      st.session_state['sel_fltGrp'] = 0
 
+if  'sel_DesGrp' not in st.session_state:
+     st.session_state['sel_DesGrp'] = ""
+     
 if  st.session_state.sel_Presenca == -2:
     with st.form(key="pre_filtro", border=True):
         st.write("* Filtra data e grupo da presença")
@@ -28,20 +31,48 @@ if  st.session_state.sel_Presenca == -2:
         dfgrp = controlGrupo.ListaGrupo(None)
         selgrp = st.selectbox(label="Grupo", options=dfgrp.Grupo.unique(), index=0)
         idata = st.date_input(label="Data", value="today", format="DD/MM/YYYY")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         bFiltrar = col1.form_submit_button(label="Fitrar", type="primary")
         bCriarLista = col2.form_submit_button(label="Cria Listar", type="primary")
+        bExcluirLista = col3.form_submit_button(label="Excluir Listar", type="primary")
         
-        if  bFiltrar or bCriarLista:
+        if  bFiltrar or bCriarLista or bExcluirLista:
             for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
                 idselgrp = v
             st.session_state.sel_fltGrp = idselgrp
             st.session_state.sel_fltData = idata
+            st.session_state.sel_DesGrp = selgrp
             st.session_state.sel_Presenca = 0
             if  bCriarLista:
-                controlPresenca.GerarListaPresenca(idata, idselgrp)
+                st.session_state.sel_Presenca = -3
+            if  bExcluirLista:
+                st.session_state.sel_Presenca = -4
             st.rerun()
 
+if  (st.session_state.sel_Presenca == -3) or (st.session_state.sel_Presenca == -4):
+    if  st.session_state.sel_Presenca == -3:
+        txt = "Inserir"
+    else:
+        txt = "Excluir"
+    data = st.session_state.sel_fltData.strftime("%d/%m/%Y")
+    st.write(f"Grupo : :red[{st.session_state.sel_DesGrp}]")
+    st.write(f"Data : :red[{data}]")
+    st.write("----")
+    st.write(f"Deseja mesmo :red[{txt}] presença para o grupo e a data informada?")
+    col1, col2, col3 = st.columns(3)
+    bVoltar = col1.button(label="Voltar", type="primary")
+    bContinua = col2.button(label=txt, type="primary")
+    if  bContinua:
+        if  st.session_state.sel_Presenca == -3:
+            controlPresenca.GerarListaPresenca(st.session_state.sel_fltData, st.session_state.sel_fltGrp)
+        else:
+            controlPresenca.ExcluirListaPresenca(st.session_state.sel_fltData, st.session_state.sel_fltGrp)
+        st.session_state.sel_Presenca = 0
+        st.rerun()
+    if  bVoltar:
+        st.session_state.sel_Presenca = -2
+        st.rerun()    
+        
 def btnNovoClick():
     st.session_state.sel_Presenca = -1
     

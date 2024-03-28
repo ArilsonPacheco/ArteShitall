@@ -22,4 +22,11 @@ with st.form(key="Consulta", border=True):
         for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
             idselgrp = v
         df = controlPresenca.ConsultaPresenca(dti, dtf, idselgrp)
-        st.dataframe(df)
+        st.dataframe(df, column_config={
+            "% Presença": st.column_config.ProgressColumn(
+            help="Porcentagem de presença dos encontros",
+            format="%3.2f",
+            min_value=0,
+            max_value=100,
+            ),
+         })
