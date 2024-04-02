@@ -1,6 +1,7 @@
 import streamlit as st
 import df_grid as grid
 import controllers.Aluno as controlAluno
+import datetime as dt
 
 
 st.set_page_config(page_title="ArteShitall - Aniverssário", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
@@ -10,7 +11,9 @@ if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.se
     st.switch_page("1_🏠_Home.py")
 
 with st.form(key="cad_Aluno", border=True):
-    mes = st.number_input("Mês do Aniverssário", min_value=1, max_value=12, value=1)
+    hoje = int(dt.datetime.now().strftime("%m"))
+    desc_mes = dt.datetime.now().strftime("%d/%m/%Y")
+    mes = st.number_input(f"Mês do Aniverssário? [ hoje é {desc_mes} ]", min_value=1, max_value=12, value=hoje)
     col1, col2 = st.columns([0.4, 0.6])
     bConsulta = col2.form_submit_button(label="Consultar", type="primary")
     if  bConsulta:
