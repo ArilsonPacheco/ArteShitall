@@ -6,6 +6,7 @@ import pandas as pd
 qryAluno = 'select "IDAluno", "NM_Aluno", "DS_Categoria", "DT_Nasc"::Date, "DT_Cadastro"::Date, "Ativo", "fk_Categoria_rCategoria", a."created_at" from "Aluno" a, "Categoria" c where c."IDCategoria" = a."fk_Categoria_rCategoria"'
 whr = ' where "IDAluno" = %s'
 whr1= ' and "IDAluno" = %s'
+orderby = ' order by "NM_Aluno"'
 
 def RecDF(rd):
     return pd.DataFrame.from_records(rd, columns=["id", "Aluno", "Categoria", "Data Nasc.", "Data Cadastro", "Ativo", "id categoria", "created_at"])
@@ -19,7 +20,7 @@ def ListaAluno(id):
             retusr.append(Aluno.Aluno(row.id, row.created_at, row.Aluno, row[4], row[5], row.Ativo, row[7], row.Categoria))
         return retusr[0]
     else:
-        db.curssor.execute(qryAluno)
+        db.curssor.execute(qryAluno + orderby)
         return RecDF(db.curssor.fetchall())
 
 def ListaAniverssario(mes):
@@ -27,7 +28,7 @@ def ListaAniverssario(mes):
     return RecDF(db.curssor.fetchall())
     
 def ListaAlunoF7():
-    qryAlunoF7 = 'select "IDAluno", "NM_Aluno" from "Aluno"'
+    qryAlunoF7 = 'select "IDAluno", "NM_Aluno" from "Aluno"' + orderby
     db.curssor.execute(qryAlunoF7)
     return pd.DataFrame.from_records(db.curssor.fetchall(), columns=["id", "Aluno"])
     
