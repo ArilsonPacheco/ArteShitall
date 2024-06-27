@@ -44,7 +44,7 @@ if  st.session_state.sel_Grupo_Aluno > 0:
         st.rerun()
 
     with st.form(key="cad_Grupo_Aluno", border=True):
-        dfalu = controlAluno.ListaAlunoF7()
+        dfalu = controlAluno.ListaAlunoF7(None)
         dfgrp = controlGrupo.ListaGrupo(None)
         retusr = controlGrupo_Aluno.ListaGrupo_Aluno(st.session_state.sel_Grupo_Aluno)
         
@@ -78,7 +78,7 @@ if  st.session_state.sel_Grupo_Aluno == -1:
         st.session_state.sel_Grupo_Aluno = 0
         st.rerun()
     with st.form(key="cad_Grupo_Aluno", border=True):
-        dfalu = controlAluno.ListaAlunoF7()
+        dfalu = controlAluno.ListaAlunoF7(None)
         dfgrp = controlGrupo.ListaGrupo(None)
 
         selalu = st.selectbox(label="Aluno", options=dfalu.Aluno.unique(), index=0)

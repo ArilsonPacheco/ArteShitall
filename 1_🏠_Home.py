@@ -12,7 +12,8 @@ if 'Nivel' not in st.session_state:
 with st.sidebar:
     col1, col2 = st.columns([0.4, 0.6])
     col2.image(st.secrets.Logo1, width=50)
-          
+#st.logo(st.secrets.Logo1)
+
 if  st.session_state.Nivel == 0:    
     login_form = st.form(key="login", border=True)
     login_form.image(st.secrets.Logo2)

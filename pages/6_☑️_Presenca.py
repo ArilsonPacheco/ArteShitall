@@ -110,15 +110,16 @@ if  st.session_state.sel_Presenca > 0:
         st.rerun()
 
     with st.form(key="cad_Presenca", border=True):
-        dfalu = controlAluno.ListaAlunoF7()
-        dfgrp = controlGrupo.ListaGrupo(None)
+        dfalu = controlAluno.ListaAlunoF7(st.session_state.sel_fltGrp)
+        #dfgrp = controlGrupo.ListaGrupo(None)
         retusr = controlPresenca.ListaPresenca(st.session_state.sel_Presenca, None, None)
         
         idselalu = int(dfalu.loc[dfalu['Aluno'] == retusr.Aluno].index[0])
         selalu = st.selectbox(label="Aluno", options=dfalu.Aluno.unique(), index=idselalu)
         
-        idselgrp = int(dfgrp.loc[dfgrp['Grupo'] == retusr.Grupo].index[0])
-        selgrp = st.selectbox(label="Grupo", options=dfgrp.Grupo.unique(), index=idselgrp)
+        #idselgrp = int(dfgrp.loc[dfgrp['Grupo'] == retusr.Grupo].index[0])
+        #selgrp = st.selectbox(label="Grupo", options=dfgrp.Grupo.unique(), index=idselgrp)
+        st.write(f"Grupo : :red[{st.session_state.sel_DesGrp}]")
         
         idata = st.date_input(label="Data", value=retusr.Data, format="DD/MM/YYYY")
         ipresente = st.checkbox(label="Presente", value=retusr.Presente)
@@ -130,8 +131,9 @@ if  st.session_state.sel_Presenca > 0:
         if  bSalvar:
             for v in dfalu.loc[dfalu.Aluno == selalu, 'id']:
                 idselalu = v
-            for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
-                idselgrp = v
+            #for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
+            #    idselgrp = v
+            idselgrp = st.session_state.sel_fltGrp
             controlPresenca.AtualizaPresenca(Presenca.Presenca(st.session_state.sel_Presenca, 0, ipresente, ijustificado, idata, idselgrp, idselalu, None, None))
             st.session_state.sel_Presenca = 0
             st.rerun()
@@ -147,14 +149,15 @@ if  st.session_state.sel_Presenca == -1:
         st.session_state.sel_Presenca = 0
         st.rerun()
     with st.form(key="cad_Presenca", border=True):
-        dfalu = controlAluno.ListaAlunoF7()
-        dfgrp = controlGrupo.ListaGrupo(None)
+        dfalu = controlAluno.ListaAlunoF7(st.session_state.sel_fltGrp)
+        #dfgrp = controlGrupo.ListaGrupo(None)
 
         selalu = st.selectbox(label="Aluno", options=dfalu.Aluno.unique(), index=0)
 
-        selgrp = st.selectbox(label="Grupo", options=dfgrp.Grupo.unique(), index=0)
+        #selgrp = st.selectbox(label="Grupo", options=dfgrp.Grupo.unique(), index=0)
+        st.write(f"Grupo : :red[{st.session_state.sel_DesGrp}]")
         
-        idata = st.date_input(label="Data", value="today", format="DD/MM/YYYY")
+        idata = st.date_input(label="Data", value=st.session_state.sel_fltData, format="DD/MM/YYYY")
         ipresente = st.checkbox(label="Presente", value=True)
         ijustificado = st.checkbox(label="Justificado", value=False)
         
@@ -164,8 +167,9 @@ if  st.session_state.sel_Presenca == -1:
         if  bSalvar:
             for v in dfalu.loc[dfalu.Aluno == selalu, 'id']:
                 idselalu = v
-            for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
-                idselgrp = v
+            #for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
+            #    idselgrp = v
+            idselgrp = st.session_state.sel_fltGrp
             controlPresenca.InserePresenca(Presenca.Presenca(0, 0, ipresente, ijustificado, idata, idselgrp, idselalu, None, None))
             st.session_state.sel_Presenca = 0
             st.rerun()

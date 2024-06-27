@@ -27,9 +27,13 @@ def ListaAniverssario(mes):
     db.curssor.execute(qryAluno + ' and extract(month from "DT_Nasc") = %s', (mes,))
     return RecDF(db.curssor.fetchall())
     
-def ListaAlunoF7():
-    qryAlunoF7 = 'select "IDAluno", "NM_Aluno" from "Aluno"' + orderby
-    db.curssor.execute(qryAlunoF7)
+def ListaAlunoF7(idGrupo):
+    if  idGrupo:
+        qryAlunoF7 = 'select "IDAluno", "NM_Aluno" from "Aluno", "Grupo_Aluno" where "IDAluno" = "fk_Aluno_rAluno" and "fk_Grupo_rGrupo" = %s'
+        db.curssor.execute(qryAlunoF7 + orderby, (idGrupo,))
+    else:
+        qryAlunoF7 = 'select "IDAluno", "NM_Aluno" from "Aluno"'
+        db.curssor.execute(qryAlunoF7 + orderby)
     return pd.DataFrame.from_records(db.curssor.fetchall(), columns=["id", "Aluno"])
     
 def InsereAluno(Aluno):
