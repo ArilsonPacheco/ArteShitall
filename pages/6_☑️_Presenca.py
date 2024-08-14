@@ -33,8 +33,8 @@ if  st.session_state.sel_Presenca == -2:
         idata = st.date_input(label="Data", value="today", format="DD/MM/YYYY")
         col1, col2, col3 = st.columns(3)
         bFiltrar = col1.form_submit_button(label="Fitrar", type="primary")
-        bCriarLista = col2.form_submit_button(label="Cria Listar", type="primary")
-        bExcluirLista = col3.form_submit_button(label="Excluir Listar", type="primary")
+        bCriarLista = col2.form_submit_button(label="Criar Lista", type="primary")
+        bExcluirLista = col3.form_submit_button(label="Excluir Lista", type="primary")
         
         if  bFiltrar or bCriarLista or bExcluirLista:
             for v in dfgrp.loc[dfgrp.Grupo == selgrp, 'id']:
@@ -73,8 +73,8 @@ if  (st.session_state.sel_Presenca == -3) or (st.session_state.sel_Presenca == -
         st.session_state.sel_Presenca = -2
         st.rerun()    
         
-def btnNovoClick():
-    st.session_state.sel_Presenca = -1
+#def btnNovoClick():
+#    st.session_state.sel_Presenca = -1
     
 def btnNovoFiltroClick():
     st.session_state.sel_Presenca = -2
@@ -101,7 +101,7 @@ if  st.session_state.sel_Presenca == 0:
         st.session_state.sel_Presenca = fld.id
         st.rerun()
     
-    st.button(label="Nova Preseça", type="primary", on_click=btnNovoClick)
+   # st.button(label="Nova Preseça", type="primary", on_click=btnNovoClick)
     
 if  st.session_state.sel_Presenca > 0:
     bVoltar = st.button(label="Voltar", type="primary")
