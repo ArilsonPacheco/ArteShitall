@@ -89,7 +89,7 @@ if  st.session_state.sel_Aluno == -1:
         if  bSalvar:
             for v in dfcat.loc[dfcat.categoria == selcat, 'id']:
                 idsel = v
-            controlAluno.InsereAluno(Aluno.Aluno(0, 0, iAluno, idatanc, idatacad, iativo, idsel, None))
+            controlAluno.InsereAluno(Aluno.Aluno(0, 0, iAluno, idatanc, idatacad, iativo, idsel, None, None))
             st.session_state.sel_Aluno = 0
             st.rerun()
     
