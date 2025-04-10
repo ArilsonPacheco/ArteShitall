@@ -1,6 +1,6 @@
 
 class Aluno:
-    def __init__(self, IDAluno, created_at, NM_Aluno, DT_Nasc, DT_Cadastro, Ativo, fk_Categoria_rCategoria, Categoria):
+    def __init__(self, IDAluno, created_at, NM_Aluno, DT_Nasc, DT_Cadastro, Ativo, fk_Categoria_rCategoria, Categoria, CD_CRC):
         self.IDAluno = IDAluno
         self.created_at = created_at
         self.NM_Aluno = NM_Aluno
@@ -9,3 +9,4 @@ class Aluno:
         self.Ativo = Ativo
         self.fk_Categoria_rCategoria = fk_Categoria_rCategoria
         self.Categoria = Categoria
+        self.CD_CRC = CD_CRC

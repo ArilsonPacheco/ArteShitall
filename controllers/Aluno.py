@@ -3,13 +3,13 @@ import services.database as db
 import models.Aluno as Aluno
 import pandas as pd
 
-qryAluno = 'select "IDAluno", "NM_Aluno", "DS_Categoria", "DT_Nasc"::Date, "DT_Cadastro"::Date, "Ativo", "fk_Categoria_rCategoria", a."created_at" from "Aluno" a, "Categoria" c where c."IDCategoria" = a."fk_Categoria_rCategoria"'
+qryAluno = 'select "IDAluno", "NM_Aluno", "DS_Categoria", "DT_Nasc"::Date, "DT_Cadastro"::Date, "Ativo", "fk_Categoria_rCategoria", a."created_at", a."CD_CRC" from "Aluno" a, "Categoria" c where c."IDCategoria" = a."fk_Categoria_rCategoria"'
 whr = ' where "IDAluno" = %s'
 whr1= ' and "IDAluno" = %s'
 orderby = ' order by "NM_Aluno"'
 
 def RecDF(rd):
-    return pd.DataFrame.from_records(rd, columns=["id", "Aluno", "Categoria", "Data Nasc.", "Data Cadastro", "Ativo", "id categoria", "created_at"])
+    return pd.DataFrame.from_records(rd, columns=["id", "Aluno", "Categoria", "Data Nasc.", "Data Cadastro", "Ativo", "id categoria", "created_at", "CD_CRC"])
 
 def ListaAluno(id):
     if  id:
@@ -17,7 +17,7 @@ def ListaAluno(id):
         db.curssor.execute(qryAluno + whr1, (id,))
         df = RecDF(db.curssor.fetchall())
         for row in df.itertuples():
-            retusr.append(Aluno.Aluno(row.id, row.created_at, row.Aluno, row[4], row[5], row.Ativo, row[7], row.Categoria))
+            retusr.append(Aluno.Aluno(row.id, row.created_at, row.Aluno, row[4], row[5], row.Ativo, row[7], row.Categoria, row.CD_CRC))
         return retusr[0]
     else:
         db.curssor.execute(qryAluno + orderby)

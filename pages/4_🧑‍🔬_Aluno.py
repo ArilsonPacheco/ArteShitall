@@ -47,7 +47,7 @@ if  st.session_state.sel_Aluno > 0:
     with st.form(key="cad_Aluno", border=True):
         dfcat = controlCategoria.ListaCategoria(None)
         retusr = controlAluno.ListaAluno(st.session_state.sel_Aluno)
-        iAluno = st.text_input(label="Aluno", value=retusr.NM_Aluno)
+        iAluno = st.text_input(label=f"Aluno [ :red[Código {retusr.CD_CRC}] ]", value=retusr.NM_Aluno)
         idatanc = st.date_input(label="Data Nascimento", value=retusr.DT_Nasc, format="DD/MM/YYYY")
         idatacad = st.date_input(label="Data Cadastro", value=retusr.DT_Cadastro, format="DD/MM/YYYY")
         iativo = st.checkbox(label="Ativo", value=retusr.Ativo)
@@ -61,7 +61,7 @@ if  st.session_state.sel_Aluno > 0:
         if  bSalvar:
             for v in dfcat.loc[dfcat.categoria == selcat, 'id']:
                 idsel = v
-            controlAluno.AtualizaAluno(Aluno.Aluno(st.session_state.sel_Aluno, 0, iAluno, idatanc, idatacad, iativo, idsel, None))
+            controlAluno.AtualizaAluno(Aluno.Aluno(st.session_state.sel_Aluno, 0, iAluno, idatanc, idatacad, iativo, idsel, None, None))
             st.session_state.sel_Aluno = 0
             st.rerun()
             
