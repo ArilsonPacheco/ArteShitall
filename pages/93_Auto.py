@@ -20,9 +20,10 @@ if  link:
          col1, col2 = st.columns(2)
          bSalvar = col1.form_submit_button(label="Presença", type="primary")
          if  bSalvar:
+             Agora = dt.datetime.now(fuso_horario)
              dti = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[2].split(":")[0]), int(link[2].split(":")[1]), 0)
              dtf = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[3].split(":")[0]), int(link[3].split(":")[1]), 0)
-             if  (dt.datetime.now(fuso_horario) >= dti) and (dt.datetime.now(fuso_horario) <= dtf):
+             if  (Agora >= dti) and (Agora <= dtf):
                  retusr = controlAluno.LocalizaAlunoCD_CRC(cd_crc.strip())
                  if  retusr:
                      st.write(f"Aluno : :red[{retusr.NM_Aluno}]")
