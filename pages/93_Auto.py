@@ -21,8 +21,8 @@ if  link:
          bSalvar = col1.form_submit_button(label="Presença", type="primary")
          if  bSalvar:
              Agora = dt.datetime.now(fuso_horario)
-             dti = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[2].split(":")[0]), int(link[2].split(":")[1]), 0)
-             dtf = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[3].split(":")[0]), int(link[3].split(":")[1]), 0)
+             dti = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[2].split(":")[0]), int(link[2].split(":")[1]), 0).astimezone(fuso_horario)
+             dtf = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[3].split(":")[0]), int(link[3].split(":")[1]), 0).astimezone(fuso_horario)
              if  (Agora >= dti) and (Agora <= dtf):
                  retusr = controlAluno.LocalizaAlunoCD_CRC(cd_crc.strip())
                  if  retusr:
