@@ -25,7 +25,7 @@ with st.form(key="pLink", border=True):
        link = f"{idselgrp};{data};{hora_i};{hora_f}"
        crp = cryptocode.encrypt(link, st.secrets.Chave_Link)
        #st.write(f"Link criptografado : :green[{crp}]")     
-       st.write(f"Link descriptografado : :green[{cryptocode.decrypt(crp, st.secrets.Chave_Link)}]")
+       #st.write(f"Link descriptografado : :green[{cryptocode.decrypt(crp, st.secrets.Chave_Link)}]")
       
        surl = xurl.urlencode({"link" : crp})
        link = f"https://dbarte.streamlit.app/Auto?{surl}" 

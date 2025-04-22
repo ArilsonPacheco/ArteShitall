@@ -4,7 +4,9 @@ import datetime as dt
 import controllers.Presenca as controlPresenca
 import controllers.Grupo as controlGrupo 
 import controllers.Aluno as controlAluno
+import pytz
 
+fuso_horario = pytz.timezone('America/Sao_Paulo')
 link = cryptocode.decrypt(st.query_params.link, st.secrets.Chave_Link)
 if  link:
     link = link.split(";")
@@ -20,7 +22,7 @@ if  link:
          if  bSalvar:
              dti = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[2].split(":")[0]), int(link[2].split(":")[1]), 0)
              dtf = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[3].split(":")[0]), int(link[3].split(":")[1]), 0)
-             if  (dt.datetime.now() >= dti) and (dt.datetime.now() <= dtf):
+             if  (dt.datetime.now(fuso_horario) >= dti) and (dt.datetime.now(fuso_horario) <= dtf):
                  retusr = controlAluno.LocalizaAlunoCD_CRC(cd_crc.strip())
                  if  retusr:
                      st.write(f"Aluno : :red[{retusr.NM_Aluno}]")
