@@ -36,6 +36,17 @@ def ListaAlunoF7(idGrupo):
         db.curssor.execute(qryAlunoF7 + orderby)
     return pd.DataFrame.from_records(db.curssor.fetchall(), columns=["id", "Aluno"])
     
+def LocalizaAlunoCD_CRC(CD_CRC):
+    retusr = []
+    db.curssor.execute(qryAluno + ' and "CD_CRC" = %s', (CD_CRC,))
+    df = RecDF(db.curssor.fetchall())
+    for row in df.itertuples():
+        retusr.append(Aluno.Aluno(row.id, row.created_at, row.Aluno, row[4], row[5], row.Ativo, row[7], row.Categoria, row.CD_CRC))
+    if  retusr == []:
+        return None
+    else:
+        return retusr[0]
+
 def InsereAluno(Aluno):
     insAluno = 'insert into "Aluno" ("NM_Aluno", "DT_Nasc", "DT_Cadastro", "Ativo", "fk_Categoria_rCategoria") values (%s, %s, %s, %s, %s)'
     params = (Aluno.NM_Aluno, Aluno.DT_Nasc, Aluno.DT_Cadastro, Aluno.Ativo, Aluno.fk_Categoria_rCategoria, )

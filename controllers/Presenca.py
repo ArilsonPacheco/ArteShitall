@@ -43,6 +43,11 @@ def GerarListaPresenca(data, idgrupo):
     params = (data, idgrupo,)
     db.curssor.execute(gerPresenca, params)
 
+def GerarListaPresencaAluno(data, idgrupo, idaluno):
+    gerPresenca = 'select "GerarPresencaAluno"(%s, %s, %s)'
+    params = (data, idgrupo, idaluno,)
+    db.curssor.execute(gerPresenca, params)
+
 def ExcluirListaPresenca(data, idgrupo):
     excPresenca = 'select "ExcluirPresenca"(%s, %s)'
     params = (data, idgrupo,)
