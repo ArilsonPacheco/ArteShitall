@@ -23,8 +23,8 @@ if  link:
              Agora = dt.datetime.now(fuso_horario)
              dti = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[2].split(":")[0]), int(link[2].split(":")[1]), 0).replace(tzinfo=fuso_horario)
              dtf = dt.datetime(int(link[1].split("-")[0]), int(link[1].split("-")[1]), int(link[1].split("-")[2]), int(link[3].split(":")[0]), int(link[3].split(":")[1]), 0).replace(tzinfo=fuso_horario)
-             st.write(f"Agora : :red[{Agora}]")
-             st.write(f"Intervalo : :red[{dti}] - :red[{dtf}]")
+             #st.write(f"Agora : :red[{Agora}]")
+             #st.write(f"Intervalo : :red[{dti}] - :red[{dtf}]")
              if  (Agora >= dti) and (Agora <= dtf):
                  retusr = controlAluno.LocalizaAlunoCD_CRC(cd_crc.strip())
                  if  retusr:
