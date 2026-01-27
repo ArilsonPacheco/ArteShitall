@@ -20,5 +20,5 @@ with st.form(key="cad_Aluno", border=True):
         df = controlAluno.ListaAniverssario(mes)
         st.data_editor(df,column_config={"Data Nasc.": st.column_config.DateColumn(format="DD/MM/YYYY"),
                     "Data Cadastro": st.column_config.DateColumn(format="DD/MM/YYYY")
-                    }, hide_index=True, use_container_width=True,
+                    }, hide_index=True, width='stretch',
                     disabled=df.columns)
