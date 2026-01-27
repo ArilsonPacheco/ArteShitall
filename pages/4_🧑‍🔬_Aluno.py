@@ -7,7 +7,7 @@ import models.Aluno as Aluno
 
 st.set_page_config(page_title="ArteShitall - Aluno", page_icon=st.secrets.Logo1, initial_sidebar_state="expanded")
 
-st.subheader(":scientist: Cadastro de aluno", divider="rainbow")
+st.subheader(":man_scientist: Cadastro de aluno", divider="rainbow")
 if  ('Nivel' not in st.session_state) or (st.session_state.Nivel == 0) or (st.session_state.Nivel not in st.secrets.Nivel_y):
     st.switch_page("1_🏠_Home.py")
     
@@ -48,7 +48,7 @@ if  st.session_state.sel_Aluno > 0:
         dfcat = controlCategoria.ListaCategoria(None)
         retusr = controlAluno.ListaAluno(st.session_state.sel_Aluno)
         iAluno = st.text_input(label=f"Aluno [ :red[Código {retusr.CD_CRC}] ]", value=retusr.NM_Aluno)
-        idatanc = st.date_input(label="Data Nascimento", value=retusr.DT_Nasc, format="DD/MM/YYYY")
+        idatanc = st.date_input(label="Data Nascimento", value=retusr.DT_Nasc, format="DD/MM/YYYY", min_value="1901-01-01")
         idatacad = st.date_input(label="Data Cadastro", value=retusr.DT_Cadastro, format="DD/MM/YYYY")
         iativo = st.checkbox(label="Ativo", value=retusr.Ativo)
         idsel = int(dfcat.loc[dfcat['categoria'] == retusr.Categoria].index[0])
