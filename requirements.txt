@@ -1,4 +1,4 @@
-psycopg2
+psycopg2-binary
 sqlalchemy==2.0.25
 pandas
 pygwalker
